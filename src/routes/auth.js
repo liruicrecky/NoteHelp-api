@@ -9,8 +9,8 @@ router.post('/', (req, res) => {
     User
         .findOne({email: userCredentials.email})
         .then(user => {
-            if (user) {
-                res.json({})
+            if (user && user.isValidPassword(userCredentials.password)) {
+                res.json({success: true})
             } else {
                 res
                     .status(400)
