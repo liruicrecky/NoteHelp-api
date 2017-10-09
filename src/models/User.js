@@ -3,6 +3,10 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 
 const schema = mongoose.Schema({
+    name: {
+        type: String, 
+        required: true
+    },
     email: {
         type: String,
         required: true,
