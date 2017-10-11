@@ -59,6 +59,9 @@ schema.methods.toAuthedJson = function toAuthedJson() {
     }
 }
 
-schema.plugin(uniqueValidator, {message: '邮箱已经被使用！'})
+schema.plugin(uniqueValidator, {
+    success: false,
+    message: '邮箱已经被使用！'
+})
 
 export default mongoose.model('User', schema)

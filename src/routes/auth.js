@@ -15,8 +15,9 @@ router.post('/', (req, res) => {
                 res
                     .status(400)
                     .json({
+                        success: false,
                         errors: {
-                            global: '无效的用户名或密码'
+                            global: '无效的用户名或密码！'
                         }
                     })
             }
@@ -34,7 +35,12 @@ router.post('/reset_password', (req, res) => {
             } else {
                 res
                     .status(400)
-                    .json({errors: {global: '没有这个邮件地址！'}})
+                    .json({
+                        success: false,
+                        errors: {
+                            global: '没有这个邮件地址！'
+                        }
+                    })
             }
         })
 })
