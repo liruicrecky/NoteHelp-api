@@ -15,6 +15,10 @@ const schema = mongoose.Schema({
         type: String,
         required: true
     },
+    nickName: {
+        type: String,
+        required: false
+    },
     passwordHash: {
         type: String,
         required: true
@@ -47,13 +51,16 @@ schema.methods.generateConfirmationUrl = function generateConfirmationUrl() {
 
 schema.methods.generateJWT = function generateJWT() {
     return jwt.sign({
-        email: this.email
+        email: this.email,
+        name: this.name,
+        confirmed: this.confirmed
     }, process.env.JWT_SECRET)
 }
 
 schema.methods.toAuthedJson = function toAuthedJson() {
     return {
         email: this.email,
+        name: this.name,
         confirmed: this.confirmed,
         token: this.generateJWT()
     }

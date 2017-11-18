@@ -13,13 +13,12 @@ router.post('/', (req, res) => {
     user.setConfirmationToken()
     user
         .save()
-        .then(// userRecord => {
-           // sendConfirmationEmail(userRecord) 发送验证邮件
+        .then(userRecord => {
+            // sendConfirmationEmail(userRecord) 发送验证邮件
             res.json({
-                success: true
+                user: userRecord.toAuthedJson()
             })
-    //    }
-        )
+        })
         .catch(err => res.status(400).json({
             errors: parseErrors(err.errors)
         }))

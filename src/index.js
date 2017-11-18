@@ -1,5 +1,5 @@
 import express from 'express'
-import path from 'path'
+import path from 'os'
 import mongoose from 'mongoose'
 import bodyParser from 'body-parser'
 import bluePromise from 'bluebird'
@@ -17,7 +17,7 @@ mongoose.connect(process.env.MONGODB_URL, {useMongoClient: true})
 app.use('/api/auth', auth)
 app.use('/api/users', users)
 
-app.get("/*", (req, res) => {
+app.get('/*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'))
 })
 
