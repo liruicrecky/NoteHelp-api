@@ -30,6 +30,10 @@ const schema = mongoose.Schema({
     confirmationToken: {
         type: String,
         default: ''
+    },
+    collectPapers: {
+        type: Array,
+        default: []
     }
 }, {timestamps: true})
 
@@ -64,6 +68,12 @@ schema.methods.toAuthedJson = function toAuthedJson() {
         confirmed: this.confirmed,
         token: this.generateJWT()
     }
+}
+
+schema.methods.addPaper = function addPaper(email) {
+    this
+        .collectPapers
+        .addToSet(email)
 }
 
 schema.plugin(uniqueValidator, {
