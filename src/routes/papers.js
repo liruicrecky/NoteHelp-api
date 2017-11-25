@@ -54,4 +54,18 @@ router.post('/fetchAll', (req, res) => {
         })
 })
 
+router.post('/delete', (req, res) => {
+    const paperID = req.body.data
+    Paper.remove({
+        _id: paperID
+    }, err => {
+        if (!err) 
+            res.json({})
+        else 
+            res
+                .status(400)
+                .json({error: "删除错误"})
+        })
+})
+
 export default router
