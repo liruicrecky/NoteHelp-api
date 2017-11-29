@@ -22,9 +22,11 @@ router.post('/addOne', (req, res) => {
             } else {
                 Paper.create({
                     ...req.body.paper.data,
-                    uploader: uploadEmail
+                    uploader: user._id
                 }, (err, paperOB) => {
-                    user.addPaper(paperOB.id)
+                    paperOB.addCollectedUser(user._id)
+                    paperOB.save()
+                    user.addPaper(paperOB._id)
                     user.save()
                 }).then(paper => res.json({paper}))
             }
@@ -34,7 +36,9 @@ router.post('/addOne', (req, res) => {
 router.post('/fetchAll', (req, res) => {
     const uploadEmail = decode(req.body.token).email
     User
-        .find({email: uploadEmail})
+        .findOne({email: uploadEmail})
+        .populate('collectPapers')
+        .exec()
         .then(user => {
             if (!user) {
                 res
@@ -45,26 +49,60 @@ router.post('/fetchAll', (req, res) => {
                         }
                     })
             } else {
-                Paper
-                    .find({uploader: uploadEmail})
-                    .then(papers => {
-                        res.json({papers})
-                    })
+                const papers = user.collectPapers
+                res.json({papers})
             }
         })
 })
 
 router.post('/delete', (req, res) => {
-    const paperID = req.body.data
-    Paper.remove({
-        _id: paperID
-    }, err => {
-        if (!err) 
-            res.json({})
-        else 
+    const uploadEmail = decode(req.body.data.token).email
+    const paper = req.body.data.paperID
+    User.findOneAndUpdate({
+        email: uploadEmail
+    }, {
+        $pull: {
+            collectPapers: paper
+        }
+    }, (err) => {
+        if (err) {
             res
                 .status(400)
-                .json({error: "删除错误"})
+                .json({
+                    errors: {
+                        global: '非法的Email地址！'
+                    }
+                })
+        } else {
+            res.json({})
+        }
+    })
+    User
+        .findOne({email: uploadEmail})
+        .then(user => {
+            Paper.update({
+                _id: paper
+            }, {
+                $pull: {
+                    collectUsers: user._id
+                }
+            }, (e, r) => {
+                console.log(e)
+                console.log(r)
+            })
+
+            Paper
+                .findOne({_id: paper})
+                .then(p => {
+                    if (p.collectUsers.length === 0) {
+                        Paper.remove({
+                            _id: paper
+                        }, (ee) => {
+                            console.log('exe paper romove')
+                            console.log(ee)
+                        })
+                    }
+                })
         })
 })
 

@@ -31,10 +31,12 @@ const schema = mongoose.Schema({
         type: String,
         default: ''
     },
-    collectPapers: {
-        type: Array,
-        default: []
-    }
+    collectPapers: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Paper'
+        }
+    ]
 }, {timestamps: true})
 
 schema.methods.isValidPassword = function isValidPassword(password) {
@@ -70,10 +72,10 @@ schema.methods.toAuthedJson = function toAuthedJson() {
     }
 }
 
-schema.methods.addPaper = function addPaper(email) {
+schema.methods.addPaper = function addPaper(paperID) {
     this
         .collectPapers
-        .addToSet(email)
+        .push(paperID)
 }
 
 schema.plugin(uniqueValidator, {
