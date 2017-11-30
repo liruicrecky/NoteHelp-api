@@ -26,7 +26,7 @@ const schema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    collectUsers: [
+    followedUsers: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
@@ -38,9 +38,9 @@ schema.methods.setUploader = function setUploader(userID) {
     this.uploader = userID
 }
 
-schema.methods.addCollectedUser = function addCollectedUser(userID) {
+schema.methods.addFollowedUser = function addFollowedUser(userID) {
     this
-        .collectUsers
+        .followedUsers
         .push(userID)
 }
 

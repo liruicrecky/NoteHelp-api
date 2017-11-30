@@ -24,7 +24,7 @@ router.post('/addOne', (req, res) => {
                     ...req.body.paper.data,
                     uploader: user._id
                 }, (err, paperOB) => {
-                    paperOB.addCollectedUser(user._id)
+                    paperOB.addFollowedUser(user._id)
                     paperOB.save()
                     user.addPaper(paperOB._id)
                     user.save()
@@ -37,7 +37,7 @@ router.post('/fetchAll', (req, res) => {
     const uploadEmail = decode(req.body.token).email
     User
         .findOne({email: uploadEmail})
-        .populate('collectPapers')
+        .populate('followedPapers')
         .exec()
         .then(user => {
             if (!user) {
@@ -49,7 +49,7 @@ router.post('/fetchAll', (req, res) => {
                         }
                     })
             } else {
-                const papers = user.collectPapers
+                const papers = user.followedPapers
                 res.json({papers})
             }
         })
@@ -62,7 +62,7 @@ router.post('/delete', (req, res) => {
         email: uploadEmail
     }, {
         $pull: {
-            collectPapers: paper
+            followedPapers: paper
         }
     }, (err) => {
         if (err) {
@@ -84,23 +84,17 @@ router.post('/delete', (req, res) => {
                 _id: paper
             }, {
                 $pull: {
-                    collectUsers: user._id
+                    followedUsers: user._id
                 }
-            }, (e, r) => {
-                console.log(e)
-                console.log(r)
-            })
+            }, () => {})
 
             Paper
                 .findOne({_id: paper})
                 .then(p => {
-                    if (p.collectUsers.length === 0) {
+                    if (p.followedUsers.length === 0) {
                         Paper.remove({
                             _id: paper
-                        }, (ee) => {
-                            console.log('exe paper romove')
-                            console.log(ee)
-                        })
+                        }, () => {})
                     }
                 })
         })

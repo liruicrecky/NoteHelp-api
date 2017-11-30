@@ -31,7 +31,7 @@ const schema = mongoose.Schema({
         type: String,
         default: ''
     },
-    collectPapers: [
+    followedPapers: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Paper'
@@ -74,7 +74,7 @@ schema.methods.toAuthedJson = function toAuthedJson() {
 
 schema.methods.addPaper = function addPaper(paperID) {
     this
-        .collectPapers
+        .followedPapers
         .push(paperID)
 }
 
