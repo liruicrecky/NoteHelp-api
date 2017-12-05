@@ -34,10 +34,6 @@ const schema = new mongoose.Schema({
     ]
 }, {timestamps: true})
 
-schema.methods.setUploader = function setUploader(userID) {
-    this.uploader = userID
-}
-
 schema.methods.addFollowedUser = function addFollowedUser(userID) {
     this
         .followedUsers

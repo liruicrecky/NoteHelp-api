@@ -17,7 +17,6 @@ router.post('/', (req, res) => {
                 res
                     .status(400)
                     .json({
-                        success: false,
                         errors: {
                             global: '无效的用户名或密码！'
                         }

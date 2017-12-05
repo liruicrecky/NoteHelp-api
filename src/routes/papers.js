@@ -21,7 +21,7 @@ router.post('/addOne', (req, res) => {
                     })
             } else {
                 Paper.create({
-                    ...req.body.paper.data,
+                    ...req.body.paper.addPaper,
                     uploader: user._id
                 }, (err, paperOB) => {
                     paperOB.addFollowedUser(user._id)
@@ -37,7 +37,7 @@ router.post('/fetchAll', (req, res) => {
     const uploadEmail = decode(req.body.token).email
     User
         .findOne({email: uploadEmail})
-        .populate('followedPapers')
+        .populate('followedPapers', {abstract: 0})
         .exec()
         .then(user => {
             if (!user) {
